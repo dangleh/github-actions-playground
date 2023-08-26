@@ -25,4 +25,4 @@ jobs:
         run: |
           gh issue add-label ${{ github.repository }} ${{ github.event.issue.number }} task
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.SECRET_TOKEN }}
