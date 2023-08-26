@@ -1,21 +1,29 @@
-name: Add Bug Label on New Bug Reporting
+name: Add Label to Bug Reports
 on:
   issues:
     types:
       - opened
 
 jobs:
-  add-label:
+  add_label:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Check if it's a bug reporting
-        id: check-bug-reporting
+      - name: Check if it's a bug report
+        id: check_bug_report
         run: echo "Is this a bug report? ::set-output name=is_bug::${{ contains(github.event.issue.title, 'Bug Report') }}"
-
-      - name: Add 'bug' label to bug reporting issue
-        if: steps.check-bug-reporting.outputs.is_bug == 'true'
-        run: |
-          gh issue add-label ${{ github.repository }} ${{ github.event.issue.number }} bug
-        env:
-          GITHUB_TOKEN: ${{ secrets.SECRET_TOKEN }}
+        
+      - name: Add Label if it's a bug report
+        if: steps.check_bug_report.outputs.is_bug == 'true'
+        uses: actions/github-script@v5
+        with:
+          github-token: ${{ secrets.SECRET_TOKEN }}
+          script: |
+            const issueNumber = context.payload.issue.number;
+            const labelToAdd = 'bug'; // Change this to the label you want to add
+            const octokit = github.getOctokit(process.env.SECRET_TOKEN);
+            await octokit.rest.issues.addLabels({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: issueNumber,
+              labels: [labelToAdd],
+            });
