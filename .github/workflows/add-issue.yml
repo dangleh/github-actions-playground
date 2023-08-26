@@ -19,7 +19,7 @@ jobs:
         issue_body="A commit has been pushed to the main branch."
 
         # Create the issue using the GitHub API
-        response=$(curl -X POST -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" -d "{\"title\":\"$issue_title\",\"body\":\"$issue_body\"}" "https://api.github.com/repos/$GITHUB_REPOSITORY/issues")
+        response=$(curl -X POST -s -H "Authorization: token ${{ secrets.SECRET_TOKEN }}" -d "{\"title\":\"$issue_title\",\"body\":\"$issue_body\"}" "https://api.github.com/repos/$GITHUB_REPOSITORY/issues")
 
         # Check if the issue was created successfully
         if [[ $(echo "$response" | jq -r .html_url) != "null" ]]; then
