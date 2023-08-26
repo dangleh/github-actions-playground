@@ -1,5 +1,4 @@
-name: Add Label to Scrum Tickets
-
+name: Add Bug Label on New Bug Reporting
 on:
   issues:
     types:
