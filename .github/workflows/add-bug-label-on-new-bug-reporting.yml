@@ -1,0 +1,22 @@
+name: Add Label to Scrum Tickets
+
+on:
+  issues:
+    types:
+      - opened
+
+jobs:
+  add-label:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check if it's a bug reporting
+        id: check-bug-reporting
+        run: echo "Is this a bug report? ::set-output name=is_bug::${{ contains(github.event.issue.title, 'Bug Report') }}"
+
+      - name: Add 'bug' label to bug reporting issue
+        if: steps.check-bug-reporting.outputs.is_bug == 'true'
+        run: |
+          gh issue add-label ${{ github.repository }} ${{ github.event.issue.number }} bug
+        env:
+          GITHUB_TOKEN: ${{ secrets.SECRET_TOKEN }}
