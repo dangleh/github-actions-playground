@@ -13,12 +13,11 @@ jobs:
       - name: Check if it's a Scrum Ticket
         id: check-scrum-ticket
         run: |
-          if [[ $(grep -c '---\ntitle: Scrum Ticket' ${{ github.event.issue.body }}) -gt 0 ]]; then
+          if [[ $(echo "${{ github.event.issue.body }}" | grep -c '---\ntitle: Scrum Ticket') -gt 0 ]]; then
             echo "::set-output name=is_scrum_ticket::true"
           else
             echo "::set-output name=is_scrum_ticket::false"
           fi
-        shell: bash
 
       - name: Add 'task' label to Scrum Tickets
         if: steps.check-scrum-ticket.outputs.is_scrum_ticket == 'true'
