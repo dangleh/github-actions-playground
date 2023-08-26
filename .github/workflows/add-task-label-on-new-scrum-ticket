@@ -1,0 +1,28 @@
+name: Add Label to Scrum Tickets
+
+on:
+  issues:
+    types:
+      - opened
+
+jobs:
+  add-label:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check if it's a Scrum Ticket
+        id: check-scrum-ticket
+        run: |
+          if [[ $(grep -c '---\ntitle: Scrum Ticket' ${{ github.event.issue.body }}) -gt 0 ]]; then
+            echo "::set-output name=is_scrum_ticket::true"
+          else
+            echo "::set-output name=is_scrum_ticket::false"
+          fi
+        shell: bash
+
+      - name: Add 'task' label to Scrum Tickets
+        if: steps.check-scrum-ticket.outputs.is_scrum_ticket == 'true'
+        run: |
+          gh issue add-label ${{ github.repository }} ${{ github.event.issue.number }} task
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
