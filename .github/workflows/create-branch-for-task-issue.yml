@@ -1,0 +1,28 @@
+on:
+  issues:
+    types:
+      - opened
+
+jobs:
+  create-branch-for-task-issue:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v2
+
+    - name: Check if Issue has 'task' Label
+      id: check_label
+      run: echo "::set-output name=has_task_label::${{ contains(github.event.issue.labels.*.name, 'task') }}"
+
+    - name: Create Branch for Task Issue
+      if: steps.check_label.outputs.has_task_label == 'true'
+      run: |
+        issue_number=$(jq -r .issue.number "$GITHUB_EVENT_PATH")
+        issue_title=$(jq -r .issue.title "$GITHUB_EVENT_PATH")
+        branch_name="issue-$issue_number-$issue_title"
+
+        git checkout -b "$branch_name"
+        git push origin "$branch_name"
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
