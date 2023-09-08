@@ -13,7 +13,7 @@ jobs:
 
     - name: Check if Issue has 'task' Label
       id: check_label
-      run: echo "{has_task_label}=${{ contains(github.event.issue.labels.*.name, 'task') }}" >> $GITHUB_OUTPUT"
+      run: echo "has_task_label=${{ contains(github.event.issue.labels.*.name, 'task') }}" >> $GITHUB_OUTPUT"
 
     - name: Create Branch for Task Issue
       if: steps.check_label.outputs.has_task_label == 'true'
