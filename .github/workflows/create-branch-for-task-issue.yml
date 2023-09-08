@@ -20,6 +20,7 @@ jobs:
       run: |
         issue_number=$(jq -r .issue.number "$GITHUB_EVENT_PATH")
         issue_title=$(jq -r .issue.title "$GITHUB_EVENT_PATH")
+        sanitized_title=$(echo "$issue_title" | sed 's/[^a-zA-Z0-9-]/-/g')
         branch_name="$issue_number-$issue_title"
 
         git checkout -b "$branch_name"
